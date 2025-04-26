@@ -1,0 +1,7 @@
+<ul class="lista" @fadeInList>
+    <!-- Recorre cada pokémon e imprime su nombre -->
+    <li *ngFor="let pokemon of pokemones" (click)="seleccionarPokemon(pokemon)">
+      {{ pokemon.name | titlecase }}
+    </li>
+  </ul>
+  

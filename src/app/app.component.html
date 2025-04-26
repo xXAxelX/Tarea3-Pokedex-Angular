@@ -1,23 +1,20 @@
 <div class="container">
   <h1>Pokédex Angular</h1>
-
-  <ul class="lista" @fadeInList>
-    <li *ngFor="let pokemon of pokemones" (click)="verDetalles(pokemon)">
-      {{ pokemon.name | titlecase }}
-    </li>
-  </ul>
+ <!-- Componente para mostrar la lista de Pokémon -->
+  <app-pokemon-list
+    [pokemones]="pokemones"   
+    (verDetalles)="verDetalles($event)"> <!-- Evento para ver detalles de un Pokémon -->
+  </app-pokemon-list>
 
   <button class="boton" (click)="cargarPokemones()">Cargar más</button>
+<!-- Componente para mostrar los detalles de un Pokémon -->
+  <app-pokemon-detail
+    *ngIf="pokemonSeleccionado"
+    [pokemon]="pokemonSeleccionado"
+    (cerrar)="cerrarDetalles()">
+  </app-pokemon-detail>
+ <!-- Componente spinner que muestra una carga en pantalla -->
+  <app-spinner *ngIf="cargando"></app-spinner>
 
-  <div class="detalle" *ngIf="pokemonSeleccionado" @fadeDetail>
-    <h2>{{ pokemonSeleccionado.name | uppercase }}</h2>
-    <img [src]="pokemonSeleccionado.imageUrl" alt="Imagen de {{ pokemonSeleccionado.name }}">
-    <p><strong>Habilidades:</strong> {{ pokemonSeleccionado.abilities | join:', ' }}</p>
-    <button class="boton-cerrar" (click)="cerrarDetalles()">Cerrar</button>
-  </div>
-  <div *ngIf="cargando" class="spinner">
-    <div class="loader"></div>
-  </div>
-  
   <p *ngIf="error" class="error">{{ error }}</p>
 </div>

@@ -1,18 +1,37 @@
+// Importaciones necesarias para el componente principal de la app
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+
 import { PokemonService } from './services/pokemon.service';
-import { JoinPipe } from './join.pipe';
-import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
+import { PokemonListComponent } from './components/pokemon-list/pokemon-list.component';
+import { PokemonDetailComponent } from './components/pokemon-detail/pokemon-detail.component';
+import { SpinnerComponent } from './components/spinner/spinner.component';
+// Animaciones para listas y detalle
+import {
+  trigger,
+  transition,
+  style,
+  animate,
+  query,
+  stagger
+} from '@angular/animations';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, JoinPipe],
+  imports: [  // Importa componentes e HttpClient para peticiones
+    CommonModule,
+    HttpClientModule,
+    PokemonListComponent,
+    PokemonDetailComponent,
+    SpinnerComponent
+  ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [PokemonService],
+  providers: [PokemonService],// Servicio disponible solo en este componente
   animations: [
+    // Animación para la lista de pokemones
     trigger('fadeInList', [
       transition('* => *', [
         query('li', [
@@ -35,49 +54,52 @@ import { trigger, transition, style, animate, query, stagger } from '@angular/an
   ]
 })
 export class AppComponent implements OnInit {
-  pokemones: any[] = [];
-  error: string = '';
-  offset: number = 0;
+  pokemones: any[] = []; // Lista de pokemones
+  error: string = ''; 
+  offset: number = 0;   // Control de paginación
   pokemonSeleccionado: any = null;
   cargando: boolean = false;
 
-
-  constructor(private pokemonService: PokemonService) {}
-
-  ngOnInit() {
-    this.cargarPokemones();
+  constructor(private pokemonService: PokemonService) {
+    console.log('AppComponent iniciado');
   }
 
-  cargarPokemones() {
+  ngOnInit(): void {
+    this.cargarPokemones(); // Carga inicial
+  }
+// Carga la lista de pokemones desde la API
+  cargarPokemones(): void {
     this.cargando = true;
     this.pokemonService.getPokemonList(this.offset).subscribe({
-      next: data => {
+      next: (data: any[]) => {
+        console.log('Pokemones cargados:', data);
         this.pokemones = [...this.pokemones, ...data];
         this.offset += 10;
         this.cargando = false;
       },
-      error: err => {
+      error: (err: any) => {
         this.error = err.message;
         this.cargando = false;
       }
     });
   }
-  
-
-  verDetalles(pokemon: any) {
+  // Carga el detalle
+  verDetalles(pokemon: any): void {
     this.pokemonService.getPokemonDetails(pokemon.url).subscribe({
-      next: data => {
+      next: (data: any) => {
         this.pokemonSeleccionado = {
           name: data.name,
           imageUrl: data.sprites.front_default,
           abilities: data.abilities.map((a: any) => a.ability.name)
         };
       },
-      error: err => this.error = 'Error al cargar los detalles del Pokémon.'
+      error: (err: any) => {
+        this.error = 'Error al cargar los detalles del Pokémon.';
+      }
     });
   }
-
-  cerrarDetalles() {
+// Cierra el panel de detalle
+  cerrarDetalles(): void {
     this.pokemonSeleccionado = null;
   }
 }
