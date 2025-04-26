@@ -7,10 +7,10 @@ describe('PokemonService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(PokemonService);
+    service = TestBed.inject(PokemonService); // Crea instancia del servicio.
   });
 
   it('should be created', () => {
-    expect(service).toBeTruthy();
+    expect(service).toBeTruthy();// Verifica que el servicio existe.
   });
 });

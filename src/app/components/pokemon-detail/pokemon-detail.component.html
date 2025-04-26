@@ -1,0 +1,9 @@
+<div class="detalle" *ngIf="pokemon" @fadeDetail>
+  <!-- Nombre del pokémon en mayúsculas -->
+    <h2>{{ pokemon.name | uppercase }}</h2>
+    <img [src]="pokemon.imageUrl" alt="Imagen de {{ pokemon.name }}">
+    <!-- Lista de habilidades, unidas por comas usando el pipe personalizado -->
+    <p><strong>Habilidades:</strong> {{ pokemon.abilities | join:', ' }}</p>
+    <button class="boton-cerrar" (click)="cerrarDetalle()">Cerrar</button>
+  </div>
+  
